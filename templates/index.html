@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>20220415 이세빈 컴퓨터구조론 과제2</title>
+    <style>
+		
+		
+        /* 전체 페이지 중앙 정렬 */
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* 동영상 컨테이너 */
+        .video-container {
+            position: relative; /* 텍스트를 동영상 위에 배치하기 위해 필요 */
+            width: 640px; /* 동영상 너비 */
+            height: auto; /* 비율에 맞게 동영상 높이 조정 */
+        }
+
+        /* 동영상 */
+        .video-container img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        /* 텍스트 오버레이 */
+        .overlay-text {
+            position: absolute;
+            top: 10px; /* 동영상 위에서 10px */
+            left: 10px; /* 동영상 왼쪽에서 10px */
+            background-color: rgba(0, 0, 0, 0.9); /* 배경 */
+            color: white; /* 텍스트 색상 */
+            padding: 5px; /* 텍스트 내부 여백 */
+            font-size: 20px;
+            border-radius: 5px; /* 둥근 모서리 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>⚠️ 바른 자세로 집중하여 공부하세요!!</h2>
+        <h3>2초 이상 얼굴이 감지되지 않으면 🚨경고음이 발생합니다.</h3>   
+        <h3>경고음을 멈추려면 스위치를 3번 누르세요.</h3>
+        
+        <!-- 동영상 및 오버레이 텍스트 -->
+        <div class="video-container">
+            <img src="{{ url_for('video_feed') }}" alt="Video Stream">
+            <div class="overlay-text">
+                <span id="status-text"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+		// Flask에서 상태 업데이트를 가져오는 함수
+		async function updateStatus() {
+			const response = await fetch('/status'); // Flask에서 상태를 반환하는 엔드포인트 필요
+			const data = await response.json();
+			const statusText = document.getElementById('status-text');
+	
+			// 텍스트 내용 및 색상 변경
+			if (data.alarm_triggered) {
+				statusText.textContent = 'Status: ALARM TRIGGERED🚨';
+				statusText.style.color = 'red'; // 빨간색
+				statusText.style.fontWeight = 'bold'; // 굵게
+			} else {
+				statusText.textContent = 'Status: Face Detected✅';
+				statusText.style.color = 'green'; // 초록색
+				statusText.style.fontWeight = 'bold'; // 굵게
+			}
+		}
+	
+		// 상태를 주기적으로 업데이트
+		setInterval(updateStatus, 100); // 0.5초마다 업데이트
+	</script>
+	
+</body>
+</html>
